@@ -54,7 +54,7 @@ export default defineManifest({
     // Google Cloud Console — see README "Google Cloud setup". This value is
     // tied to your Google account/project; nobody else's key will work here,
     // and this one is safe to commit (OAuth client IDs are not secrets).
-    client_id: "YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com",
+    client_id: "430052355799-j6oa4rjmagqor1dskfakkecs29mfjihn.apps.googleusercontent.com",
     scopes: ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file"],
   },
 });
