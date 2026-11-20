@@ -1,0 +1,55 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  color: #1a1a1a;
+  background: #fafafa;
+}
+#root, .app { height: 100vh; display: flex; flex-direction: column; }
+
+.app-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px; border-bottom: 1px solid #e3e3e3; background: #fff;
+}
+.app-header h1 { font-size: 14px; margin: 0; font-weight: 600; }
+.icon-btn { background: none; border: none; cursor: pointer; font-size: 16px; }
+
+.log { flex: 1; overflow-y: auto; padding: 12px; }
+.hint { color: #888; font-size: 12.5px; }
+.hint.small { padding: 0 12px; margin: 0 0 6px; }
+
+.task-card { background: #fff; border: 1px solid #e3e3e3; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
+.instruction { margin: 0 0 8px; }
+.status { margin: 6px 0 0; font-size: 12.5px; }
+.status.completed { color: #1a7f37; }
+.status.failed { color: #b3261e; }
+.status.stopped { color: #946800; }
+
+.plan-preview { margin-top: 6px; }
+.plan-summary { font-style: italic; color: #444; margin: 0 0 8px; }
+.plan-steps { list-style: none; margin: 0; padding: 0; }
+.plan-step { display: flex; gap: 6px; padding: 4px 0; align-items: baseline; font-size: 12.5px; }
+.plan-step.done .step-icon { color: #1a7f37; }
+.plan-step.failed .step-icon { color: #b3261e; }
+.plan-step.awaiting_confirmation .step-icon { color: #946800; }
+.step-icon { width: 16px; flex-shrink: 0; }
+.sensitive-badge { color: #946800; font-weight: 600; }
+.step-error { color: #b3261e; }
+.step-result { color: #666; }
+
+.plan-actions { display: flex; gap: 8px; margin-top: 10px; }
+.plan-actions.sensitive { flex-direction: column; background: #fff7e6; border: 1px solid #f0d98c; border-radius: 6px; padding: 8px; }
+.sensitive-prompt { margin: 0 0 8px; font-size: 12.5px; }
+.confirm-btn { background: #1a7f37; color: #fff; border: none; border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+.reject-btn { background: #fff; color: #b3261e; border: 1px solid #b3261e; border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+
+.toolbar { display: flex; align-items: center; gap: 10px; padding: 6px 12px; border-top: 1px solid #e3e3e3; background: #fff; flex-wrap: wrap; }
+.checkbox { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #555; }
+.link-btn { background: none; border: none; color: #0b57d0; cursor: pointer; font-size: 12px; padding: 0; }
+.stop-btn { margin-left: auto; background: #b3261e; color: #fff; border: none; border-radius: 6px; padding: 5px 10px; cursor: pointer; font-size: 12px; }
+
+.composer { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid #e3e3e3; background: #fff; }
+.composer textarea { flex: 1; resize: none; border: 1px solid #ccc; border-radius: 6px; padding: 8px; font-size: 13px; font-family: inherit; }
+.composer button { border: none; background: #0b57d0; color: #fff; border-radius: 6px; padding: 0 16px; cursor: pointer; }
+.composer button:disabled { background: #a9c3ea; cursor: default; }
