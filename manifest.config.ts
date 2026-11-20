@@ -48,6 +48,10 @@ export default defineManifest({
     "https://api.anthropic.com/*",
     "https://sheets.googleapis.com/*",
     "https://www.googleapis.com/*",
+    "https://api.openai.com/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://openrouter.ai/*",
+    "https://routellm.abacus.ai/*",
   ],
   oauth2: {
     // Replace with your own OAuth 2.0 Client ID (type "Chrome App") from

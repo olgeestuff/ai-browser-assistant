@@ -61,7 +61,22 @@ class TaskRunner {
     await appendLocalTask(this.current);
 
     try {
-      const pageResp = (await sendToTab(tab.id, { kind: "READ_PAGE" })) as ContentReadPageResponse;
+      if (!/^https?:\/\//.test(tab.url)) {
+        throw new Error(
+          "This isn't a regular web page the assistant can read (extension pages, chrome:// pages, and the " +
+            "Chrome Web Store aren't supported). Switch to a normal website tab and try again."
+        );
+      }
+
+      let pageResp: ContentReadPageResponse;
+      try {
+        pageResp = (await sendToTab(tab.id, { kind: "READ_PAGE" })) as ContentReadPageResponse;
+      } catch {
+        throw new Error(
+          "Couldn't connect to this page — try refreshing the tab (the assistant's page-reader loads when a " +
+            "page first opens, so a tab open before you installed/updated the extension won't have it yet)."
+        );
+      }
       let context = pageResp.context;
       if (useSelectionOnly && context.selection) {
         context = { ...context, text: context.selection };
