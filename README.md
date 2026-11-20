@@ -20,7 +20,11 @@ multi-user) are explicitly out of scope for now.
 - Lets you **stop** a running task at any point; nothing further executes.
 - Logs task summaries to a Google Sheet you own (never raw page content), and can save
   screenshots to a Google Drive folder you own.
-- Swaps AI providers through one adapter interface — see `src/providers/`.
+- Swaps AI providers through one adapter interface — see `src/providers/`. Ships with
+  **Anthropic (Claude), OpenAI (ChatGPT), Google (Gemini), OpenRouter, and Abacus AI
+  (RouteLLM)**, selectable in Settings.
+- Lets you **attach an image** (screenshot, photo, document scan) to a chat message for
+  vision-capable models to use as context.
 
 ## Architecture (maps to the requirements doc)
 
@@ -29,7 +33,7 @@ multi-user) are explicitly out of scope for now.
 | Manifest V3 extension shell | `manifest.config.ts` | FR-001 |
 | Side panel chat UI | `src/sidepanel/` | FR-002 |
 | Content script: page read + DOM actions | `src/content/` | FR-003, FR-004, FR-005, FR-008 |
-| AI provider adapter (Anthropic first) | `src/providers/` | FR-006, FR-013 |
+| AI provider adapters (Anthropic, OpenAI, Gemini, OpenRouter, Abacus AI) | `src/providers/` | FR-006, FR-013 |
 | Action schema + validation | `src/lib/actionSchema.ts` | FR-009, FR-010 |
 | Task orchestrator (plan, confirm, execute, stop) | `src/background/taskRunner.ts` | FR-009–FR-012 |
 | Settings (provider, key, Sheet/Drive IDs) | `src/options/` | FR-014 |
@@ -66,9 +70,21 @@ icon → Options).
 
 ### 1. AI provider (BYOK)
 
-You supply your own Anthropic API key (get one at console.anthropic.com). It's stored only
-in `chrome.storage.local` on this device — never synced, never sent to any server of ours,
-only sent directly to `api.anthropic.com` when you ask the assistant to do something.
+Pick a provider in Settings and paste in your own API key for it. The key is stored only in
+`chrome.storage.local` on this device — never synced, never sent to any server of ours, only
+sent directly to that provider's own API when you ask the assistant to do something.
+
+| Provider | Get a key at | Notes |
+|---|---|---|
+| Anthropic (Claude) | console.anthropic.com → API Keys | Default model `claude-sonnet-4-5` |
+| OpenAI (ChatGPT) | platform.openai.com → API keys | Default model `gpt-4o` |
+| Google (Gemini) | aistudio.google.com → Get API key | Default model `gemini-2.5-pro` |
+| OpenRouter | openrouter.ai → Keys | Model field accepts any slug from openrouter.ai/models |
+| Abacus AI (RouteLLM) | RouteLLM API page in your Abacus AI / ChatLLM account | `route-llm` auto-picks a model, or name one directly |
+
+All five implement the same `AiProvider` interface (`src/providers/types.ts`) and go through
+the same structured-output schema (`src/providers/planSchema.ts`), so the task orchestrator,
+content script, and UI never know which vendor is in use.
 
 ### 2. Google Cloud setup (required for Sheets/Drive logging)
 
@@ -127,15 +143,20 @@ Manual test matrix to run before trusting a change:
 5. **Unsupported page**: try a page behind a login wall or a canvas-heavy app (e.g. a
    complex web app with no accessible DOM) → confirm it reports the limitation instead of
    fabricating success (AC-13).
-6. **Provider swap**: this MVP ships with Anthropic only; verify `src/providers/index.ts`
-   is the only file you'd touch to add a second provider (no other file imports a vendor
-   SDK directly).
+6. **Provider swap**: switch providers in Settings (Anthropic/OpenAI/Gemini/OpenRouter/Abacus
+   AI) with the matching API key, and confirm a plan still generates correctly.
+7. **Image attach**: click "🖼 Attach image" in the composer, pick a photo, and ask a
+   question about it (e.g. "what does this say?") — confirm the model's answer reflects
+   the image content.
 
 ## Known limitations (MVP)
 
 - One active task at a time (by design — it's a personal single-tab assistant, not a fleet).
-- Only Anthropic is implemented; OpenAI/Google adapters are stubbed in
-  `src/providers/index.ts` for later.
+- Five providers are implemented (Anthropic, OpenAI, Gemini, OpenRouter, Abacus AI); adding
+  another is one new file in `src/providers/` plus one registry line in
+  `src/providers/index.ts`.
+- Image attachments are sent as part of a single chat message (no multi-turn image history
+  yet) and are capped at 5MB client-side.
 - No Playwright / remote-browser mode (FR-024) — local tab only.
 - No Chrome Web Store packaging/signing yet — developer-mode install only (FR-001's second
   half, distributable through the Store, is a Phase 6 item per the implementation plan).

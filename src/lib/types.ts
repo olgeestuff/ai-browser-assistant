@@ -102,7 +102,15 @@ export interface PageContext {
   truncated: boolean;
 }
 
-export type ProviderId = "anthropic" | "openai" | "google";
+export type ProviderId = "anthropic" | "openai" | "google" | "openrouter" | "abacus";
+
+/** A single image the user attached in the chat composer, sent to vision-capable models as context. */
+export interface ImageAttachment {
+  /** e.g. "image/png" */
+  mimeType: string;
+  /** Raw base64 payload, no "data:...;base64," prefix. */
+  base64: string;
+}
 
 export interface Settings {
   provider: ProviderId;

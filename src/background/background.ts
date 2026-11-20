@@ -17,7 +17,7 @@ chrome.runtime.onMessage.addListener((message: UiToBackgroundMessage, _sender, s
   (async () => {
     switch (message.kind) {
       case "RUN_INSTRUCTION": {
-        const task = await taskRunner.runInstruction(message.instruction, message.useSelectionOnly);
+        const task = await taskRunner.runInstruction(message.instruction, message.useSelectionOnly, message.image);
         sendResponse(task);
         return;
       }

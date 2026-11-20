@@ -2,7 +2,24 @@ import { useEffect, useState } from "react";
 import { sendToBackground } from "../lib/messaging";
 import { getSettings, saveSettings } from "../lib/storage";
 import { DEFAULT_SETTINGS, type Settings } from "../lib/types";
-import { listAvailableProviders } from "../providers";
+import { getProvider, listAvailableProviders } from "../providers";
+
+function providerKeyHint(provider: Settings["provider"]): string {
+  switch (provider) {
+    case "anthropic":
+      return "Get a key at console.anthropic.com → API Keys.";
+    case "openai":
+      return "Get a key at platform.openai.com → API keys.";
+    case "google":
+      return "Get a key at aistudio.google.com → Get API key.";
+    case "openrouter":
+      return "Get a key at openrouter.ai → Keys. Model field accepts any slug from openrouter.ai/models.";
+    case "abacus":
+      return "Get a key from the RouteLLM API page in your Abacus AI / ChatLLM account.";
+    default:
+      return "";
+  }
+}
 
 export default function Options() {
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
@@ -38,7 +55,13 @@ export default function Options() {
         </p>
         <label>
           Provider
-          <select value={settings.provider} onChange={(e) => update({ provider: e.target.value as Settings["provider"] })}>
+          <select
+            value={settings.provider}
+            onChange={(e) => {
+              const id = e.target.value as Settings["provider"];
+              update({ provider: id, model: getProvider(id).defaultModel });
+            }}
+          >
             {providers.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.label}
@@ -50,13 +73,14 @@ export default function Options() {
           Model
           <input value={settings.model} onChange={(e) => update({ model: e.target.value })} />
         </label>
+        <p className="help">{providerKeyHint(settings.provider)}</p>
         <label>
           API key
           <input
             type="password"
             value={settings.apiKey}
             onChange={(e) => update({ apiKey: e.target.value })}
-            placeholder="sk-ant-..."
+            placeholder="Paste your API key"
             autoComplete="off"
           />
         </label>

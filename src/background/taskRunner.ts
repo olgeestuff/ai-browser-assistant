@@ -10,7 +10,7 @@ import {
   uploadFileToDrive,
 } from "../lib/google";
 import { appendLocalTask, getSettings, updateLocalTask } from "../lib/storage";
-import type { ActionPlan, StepResult, TaskRecord } from "../lib/types";
+import type { ActionPlan, ImageAttachment, StepResult, TaskRecord } from "../lib/types";
 
 /**
  * Single active task at a time, by design — a personal assistant acting on
@@ -40,7 +40,7 @@ class TaskRunner {
     this.setCurrent({ steps });
   }
 
-  async runInstruction(instruction: string, useSelectionOnly: boolean): Promise<TaskRecord> {
+  async runInstruction(instruction: string, useSelectionOnly: boolean, image?: ImageAttachment): Promise<TaskRecord> {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab?.id || !tab.url) {
       throw new Error("No active tab found. Open a tab and try again.");
@@ -74,6 +74,7 @@ class TaskRunner {
         page: context,
         apiKey: settings.apiKey,
         model: settings.model,
+        image,
       });
 
       const steps: StepResult[] = plan.steps.map((s) => ({ sequence: s.sequence, status: "pending" }));

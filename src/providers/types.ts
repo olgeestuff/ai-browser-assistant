@@ -1,10 +1,12 @@
-import type { ActionPlan, PageContext, ProviderId } from "../lib/types";
+import type { ActionPlan, ImageAttachment, PageContext, ProviderId } from "../lib/types";
 
 export interface GeneratePlanArgs {
   instruction: string;
   page: PageContext;
   apiKey: string;
   model: string;
+  /** Optional image the user attached in the chat composer (FR-image-attach). */
+  image?: ImageAttachment;
 }
 
 /**

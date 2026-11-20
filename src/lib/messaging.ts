@@ -1,8 +1,8 @@
-import type { ActionStep, PageContext, TaskRecord } from "./types";
+import type { ActionStep, ImageAttachment, PageContext, TaskRecord } from "./types";
 
 // ---- Side panel -> background ----
 export type UiToBackgroundMessage =
-  | { kind: "RUN_INSTRUCTION"; instruction: string; useSelectionOnly: boolean }
+  | { kind: "RUN_INSTRUCTION"; instruction: string; useSelectionOnly: boolean; image?: ImageAttachment }
   | { kind: "CONFIRM_STEP"; taskId: string; sequence: number; approved: boolean }
   | { kind: "CONFIRM_ALL"; taskId: string; approved: boolean }
   | { kind: "STOP_TASK"; taskId: string }
